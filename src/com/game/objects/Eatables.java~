@@ -1,0 +1,13 @@
+package objects;
+
+public abstract class Eatables {
+    int posX;
+    int posY;
+
+    public Eatables(int posX, int posY) {
+        this.posX = posX;
+        this.posY = posY;
+    }
+
+
+}
