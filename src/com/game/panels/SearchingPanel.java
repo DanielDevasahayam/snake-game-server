@@ -1,9 +1,16 @@
 package com.game.panels;
 
-import com.game.network.WebSocketClient;
+import com.game.dto.MatchResultDTO;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.Timer;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.net.URL;
 
 public class SearchingPanel extends JPanel {
@@ -40,8 +47,14 @@ public class SearchingPanel extends JPanel {
         searchForPlayers();
     }
 
-    public void searchForPlayers() {
-        new WebSocketClient().connect();
+    public MatchResultDTO searchForPlayers() {
+        try {
+//            MatchResultDTO matchResultDT = new CustomWebSocketClient().connectToWebSocket();
+
+        } catch (Exception e) {
+
+        }
+        return null;
     }
 
 

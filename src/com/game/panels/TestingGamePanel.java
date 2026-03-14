@@ -1,10 +1,25 @@
 package com.game.panels;
 
+import com.game.network.CustomWebSocketClient;
+import com.game.network.MyStompSessionHandler;
 import com.game.objects.Apple;
 import objects.objects.Snake;
+import org.springframework.messaging.converter.StringMessageConverter;
+import org.springframework.messaging.simp.stomp.StompSession;
+import org.springframework.messaging.simp.stomp.StompSessionHandler;
+import org.springframework.web.socket.client.standard.StandardWebSocketClient;
+import org.springframework.web.socket.messaging.WebSocketStompClient;
+import org.springframework.web.socket.sockjs.client.RestTemplateXhrTransport;
+import org.springframework.web.socket.sockjs.client.SockJsClient;
+import org.springframework.web.socket.sockjs.client.Transport;
+import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.Timer;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -12,7 +27,9 @@ import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.Random;
 
@@ -20,6 +37,9 @@ import java.util.Random;
 public class TestingGamePanel extends BasePanel implements ActionListener {
 
     private final String playerName;
+
+    private final CustomWebSocketClient webSocketClient = new CustomWebSocketClient();
+    public static final String WEB_SOCKET_URL = "http://localhost:8080/ws";
 
     private final int GAME_UNITS = (this.screenwidth * this.screenheight) / this.unitSize;
 
@@ -45,15 +65,48 @@ public class TestingGamePanel extends BasePanel implements ActionListener {
 
 
     public TestingGamePanel(String fileName) {
-        this(600, 600, 5, 5, "daniel");
+        this(600, 600, 10, 5, "daniel");
+        readFile(filename);
+        try {
+            testwebsocket();
+        } catch (Exception e) {
+
+        }
     }
+
+    private void testwebsocket() throws Exception {
+
+        List<Transport> transports = new ArrayList<>(2);
+        transports.add(new WebSocketTransport(new StandardWebSocketClient()));
+        transports.add(new RestTemplateXhrTransport());
+        SockJsClient sockJsClient = new SockJsClient(transports);
+        WebSocketStompClient stompClient = new WebSocketStompClient(sockJsClient);
+        stompClient.setMessageConverter(new StringMessageConverter());
+        StompSession session = null;
+        String url = "http://localhost:8080/ws";
+        StompSessionHandler sessionHandler = new MyStompSessionHandler();
+        try {
+            session = stompClient.connectAsync(url, sessionHandler).get();
+
+            session.subscribe("/topic/queue", sessionHandler);
+            System.out.println("Sending message");
+            session.send("/app/findPlayersInQueue", "player1");
+            Thread.sleep(300000);
+        } finally {
+            if (session != null) {
+                session.disconnect();
+            }
+
+        }
+    }
+
+
     public TestingGamePanel(int screenheight, int screenwidth, int unitSize, int delay, String playerName) {
         super(screenheight, screenwidth, unitSize, delay);
-        this.apple = new Apple(0,0);
-        this.snake = new Snake('R',2);
+        this.apple = new Apple(0, 0);
+        this.snake = new Snake('R', 2);
         this.playerName = playerName;
         runGame();
-        readFile("C:\\Daniel\\Tech\\SpringProjects\\spring-auth\\SnakeGame\\resources\\files\\Input.txt");
     }
 
     private void readFile(String fileName) {
@@ -138,7 +191,7 @@ public class TestingGamePanel extends BasePanel implements ActionListener {
         FontMetrics metrics = getFontMetrics(g.getFont());
         g.setColor(Color.WHITE);
 
-        g.drawString("Score: " + applesEaten,  10, metrics.getAscent() + 10);
+        g.drawString("Score: " + applesEaten, 10, metrics.getAscent() + 10);
 
         // 10px from right edge
         // 10px from top
@@ -148,8 +201,8 @@ public class TestingGamePanel extends BasePanel implements ActionListener {
 
     public void move() {
         for (int i = snake.getBodyParts(); i > 0; i--) {
-            x[i] = x[i-1];
-            y[i] = y[i-1];
+            x[i] = x[i - 1];
+            y[i] = y[i - 1];
         }
 
         switch (snake.getDirection()) {
@@ -161,8 +214,8 @@ public class TestingGamePanel extends BasePanel implements ActionListener {
     }
 
     public void newApple() {
-        apple.setPosX(random.nextInt((int)this.screenwidth/this.unitSize )*this.unitSize);
-        apple.setPosY(random.nextInt((int)this.screenheight/this.unitSize)*this.unitSize);
+        apple.setPosX(random.nextInt((int) this.screenwidth / this.unitSize) * this.unitSize);
+        apple.setPosY(random.nextInt((int) this.screenheight / this.unitSize) * this.unitSize);
     }
 
 
@@ -184,7 +237,9 @@ public class TestingGamePanel extends BasePanel implements ActionListener {
             running = false;
         }
 
-        if (!running) { timer.stop(); }
+        if (!running) {
+            timer.stop();
+        }
     }
 
     public void gameOver(Graphics g) {
@@ -193,6 +248,7 @@ public class TestingGamePanel extends BasePanel implements ActionListener {
         g.setColor(Color.red);
         g.drawString("Game Over", (this.screenwidth - metrics.stringWidth("Game Over")) / 2, this.screenheight / 2);
     }
+
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
         repaint();
@@ -204,10 +260,7 @@ public class TestingGamePanel extends BasePanel implements ActionListener {
         move();
         checkApple();
         checkCollisions();
-        try {
-            Thread.sleep(1000);
-        } catch (Exception e) {
-        }
+
     }
 
     private void processInput() {
@@ -224,6 +277,7 @@ public class TestingGamePanel extends BasePanel implements ActionListener {
             }
         }
     }
+
     public class MyKeyAdapter extends KeyAdapter {
         @Override
         public void keyPressed(KeyEvent keyEvent) {
@@ -250,6 +304,10 @@ public class TestingGamePanel extends BasePanel implements ActionListener {
                     }
                     break;
             }
+        }
+
+        public void opponentKeyPressed() {
+
         }
     }
 }

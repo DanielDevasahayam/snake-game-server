@@ -5,7 +5,9 @@ import com.game.panels.MainMenuPanel;
 import com.game.panels.SearchingPanel;
 import com.game.panels.TestingGamePanel;
 
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JSplitPane;
 
 public class MainFrame extends JFrame {
 
@@ -19,7 +21,7 @@ public class MainFrame extends JFrame {
         setLocationRelativeTo(null);
 
 //        container = new LoginPanel(this);
-        container = new TestingGamePanel(600, 600, 6, 5, "daniel");
+        container = new TestingGamePanel("C:\\Daniel\\Tech\\SpringProjects\\spring-auth\\SnakeGame\\resources\\files\\Input.txt");
         add(container);
         setVisible(true);
     }

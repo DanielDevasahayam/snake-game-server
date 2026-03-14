@@ -1,27 +1,29 @@
-# Use an official Maven image to build the application
+# ---------- Build Stage ----------
 FROM maven:3.9.4-eclipse-temurin-17 AS build
 
-# Set the working directory inside the container
 WORKDIR /app
 
-# Copy the Maven project files
+# copy pom first (better caching)
 COPY pom.xml .
+
+# download dependencies
+RUN mvn dependency:go-offline
+
+# copy source
 COPY src ./src
 
-# Build the application
+# build jar
 RUN mvn clean package -DskipTests
 
-# Use a lightweight JDK image to run the application
+
+# ---------- Runtime Stage ----------
 FROM eclipse-temurin:17-jdk-alpine
 
-# Set the working directory inside the container
 WORKDIR /app
 
-# Copy the built JAR file from the build stage
-COPY --from=build /app/target/*.jar snake-game-1.0-SNAPSHOT.jar
+# copy jar from build stage
+COPY --from=build /app/target/snake-game-1.0-SNAPSHOT.jar app.jar
 
-# Expose the port (if your application uses a specific port)
 EXPOSE 8080
 
-# Command to run the application
-CMD ["java", "-jar", "snake-game-1.0-SNAPSHOT.jar"]
+CMD ["java", "-jar", "app.jar"]
