@@ -1,6 +1,7 @@
 package com.game.panels;
 
 import com.game.dto.MatchResultDTO;
+import com.game.network.CustomWebSocketClient;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -19,6 +20,8 @@ public class SearchingPanel extends JPanel {
     private Timer timer;
     private int dotCount = 0;
     private JLabel gifLabel;
+
+    private CustomWebSocketClient customWebSocketClient;
 
     public SearchingPanel() {
 
@@ -49,8 +52,7 @@ public class SearchingPanel extends JPanel {
 
     public MatchResultDTO searchForPlayers() {
         try {
-//            MatchResultDTO matchResultDT = new CustomWebSocketClient().connectToWebSocket();
-
+            customWebSocketClient.connectToWebSocket();
         } catch (Exception e) {
 
         }

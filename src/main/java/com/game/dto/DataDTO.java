@@ -1,4 +1,4 @@
-package objects.dto;
+package com.game.dto;
 
 public class DataDTO {
     private int bodyParts;

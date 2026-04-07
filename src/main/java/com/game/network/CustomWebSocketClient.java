@@ -1,6 +1,6 @@
 package com.game.network;
 
-import org.springframework.messaging.converter.StringMessageConverter;
+import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.messaging.simp.stomp.StompSessionHandler;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
@@ -24,20 +24,17 @@ public class CustomWebSocketClient {
         transports.add(new RestTemplateXhrTransport());
         SockJsClient sockJsClient = new SockJsClient(transports);
         WebSocketStompClient stompClient = new WebSocketStompClient(sockJsClient);
-        stompClient.setMessageConverter(new StringMessageConverter());
+        stompClient.setMessageConverter(new MappingJackson2MessageConverter());
         StompSession session = null;
         String url = "http://localhost:8080/ws";
         StompSessionHandler sessionHandler = new MyStompSessionHandler();
         try {
             session = stompClient.connectAsync(url, sessionHandler).get();
+            session.subscribe("/topic/queue", sessionHandler);
             System.out.println("Sending message");
-            session.send("/app/sendMessage", "RONALDO");
-//            session.subscribe()
+            session.send("/app/findPlayersInQueue", "MESSI");
+//            Thread.sleep(300000);
         } finally {
-            if (session != null) {
-                session.disconnect();
-            }
-
         }
     }
 

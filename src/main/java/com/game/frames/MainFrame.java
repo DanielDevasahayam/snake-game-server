@@ -1,9 +1,9 @@
 package com.game.frames;
 
 import com.game.panels.GamePanel;
+import com.game.panels.LoginPanel;
 import com.game.panels.MainMenuPanel;
 import com.game.panels.SearchingPanel;
-import com.game.panels.TestingGamePanel;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -20,8 +20,8 @@ public class MainFrame extends JFrame {
         setResizable(false);
         setLocationRelativeTo(null);
 
-//        container = new LoginPanel(this);
-        container = new TestingGamePanel("C:\\Daniel\\Tech\\SpringProjects\\spring-auth\\SnakeGame\\resources\\files\\Input.txt");
+        container = new LoginPanel(this);
+//        container = new TestingGamePanel("C:\\Daniel\\Tech\\SpringProjects\\spring-auth\\SnakeGame\\resources\\files\\Input.txt");
         add(container);
         setVisible(true);
     }

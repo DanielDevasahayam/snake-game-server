@@ -1,4 +1,4 @@
-package objects.objects;
+package com.game.objects;
 
 public abstract class Eatables {
     int posX;

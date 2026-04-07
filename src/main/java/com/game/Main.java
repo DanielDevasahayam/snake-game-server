@@ -1,6 +1,4 @@
 package com.game;
-import com.game.frames.GameFrame;
-import com.game.frames.LoginFrame;
 import com.game.frames.MainFrame;
 
 // Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,

@@ -1,5 +1,6 @@
 package com.game.network;
 
+import com.game.dto.MatchResultDTO;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
@@ -15,7 +16,7 @@ public class MyStompSessionHandler extends StompSessionHandlerAdapter {
     }
     @Override
     public Type getPayloadType(StompHeaders headers) {
-        return Object.class;
+        return MatchResultDTO.class;
     }
 
     @Override

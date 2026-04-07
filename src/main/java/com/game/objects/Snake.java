@@ -1,4 +1,4 @@
-package objects.objects;
+package com.game.objects;
 
 public class Snake {
     private char direction ;
