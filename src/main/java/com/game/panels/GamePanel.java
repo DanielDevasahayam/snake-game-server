@@ -3,8 +3,12 @@ package com.game.panels;
 import com.game.objects.Apple;
 import com.game.objects.Snake;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.Timer;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -44,13 +48,14 @@ public class GamePanel extends BasePanel implements ActionListener {
     }
 
 //    public GamePanel(DataDTO dataDTO) {
+//        this(600, 600, 10, 5, "daniel");
 //        this.copYourData(dataDTO);
 //    }
 
 //    private void copYourData(DataDTO dataDTO) {
 //        this.unitSize = dataDTO.getUnitSize();
 //        this.delay = dataDTO.getDelay();
-//        this.apple = new Apple(dataDTO.(), dataDTO.getApplePosY());
+//        this.apple = new Apple(dataDTO.getApplePosX(), dataDTO.getApplePosY());
 //        this.snake = new Snake(dataDTO.getDirection(), dataDTO.getBodyParts());
 //        this.playerName = dataDTO.getPlayerName();
 //        this.runGame();
@@ -172,6 +177,7 @@ public class GamePanel extends BasePanel implements ActionListener {
     }
 
     public class MyKeyAdapter extends KeyAdapter {
+        //user this class for sending moves
         @Override
         public void keyPressed(KeyEvent keyEvent) {
             switch (keyEvent.getKeyCode()) {

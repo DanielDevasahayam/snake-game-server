@@ -3,10 +3,19 @@ package com.game.panels;
 import com.game.apiclient.ApiClient;
 import com.game.dto.HTTPResponseDTO;
 import com.game.dto.LoginRequestDTO;
+import com.game.dto.UserDataDTO;
 import com.game.frames.MainFrame;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import java.awt.GridLayout;
 
 public class LoginPanel extends JPanel {
 
@@ -29,17 +38,21 @@ public class LoginPanel extends JPanel {
 
             LoginRequestDTO request = new LoginRequestDTO(email , password);
             System.out.println("email : " + email + " password : " + password);
+
             try {
                 HTTPResponseDTO response = ApiClient.post(
                         "http://localhost:8080/auth/login",
                         request
                 );
-
-
+                JsonObject jsonObject = JsonParser.parseString(response.getMessage())
+                        .getAsJsonObject();
 
                 if (response != null && response.getStatusCode() == 200) {
                     JOptionPane.showMessageDialog(this, "Success");
-                    frame.switchTo("MENU");
+                    frame.switchTo("MENU", UserDataDTO.builder()
+                            .id(jsonObject.get("id").getAsLong())
+                            .username(jsonObject.get("username").getAsString())
+                            .build());
                 } else {
                     JOptionPane.showMessageDialog(this, "Failure : " + response);
                 }
@@ -48,7 +61,7 @@ public class LoginPanel extends JPanel {
                 JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
             }
         });
-        registerBtn.addActionListener(e -> frame.switchTo("GAME"));
+        registerBtn.addActionListener(e -> frame.switchTo("GAME", null));
 
         add(new JLabel("Username:"));
         add(email);

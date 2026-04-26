@@ -1,11 +1,14 @@
 package com.game.panels;
 
 import com.game.dto.MatchResultDTO;
+import com.game.dto.UserDataDTO;
+import com.game.frames.MainFrame;
 import com.game.network.CustomWebSocketClient;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import java.awt.Color;
 import java.awt.Font;
@@ -16,15 +19,18 @@ import java.net.URL;
 
 public class SearchingPanel extends JPanel {
 
+    private MainFrame mainFrame;
     private JLabel statusLabel;
     private Timer timer;
     private int dotCount = 0;
     private JLabel gifLabel;
 
-    private CustomWebSocketClient customWebSocketClient;
+    private JLabel toastLabel;
+    private UserDataDTO userDTO;
+    private CustomWebSocketClient customWebSocketClient = new CustomWebSocketClient();
 
-    public SearchingPanel() {
-
+    public SearchingPanel(MainFrame mainFrame, UserDataDTO userDTO) {
+        this.mainFrame = mainFrame;
         setLayout(new GridBagLayout());
         setBackground(new Color(30, 30, 30)); // dark theme
 
@@ -45,14 +51,32 @@ public class SearchingPanel extends JPanel {
 
         gbc.gridy = 1;
 //        add(gifLabel, gbc);
-
+        this.userDTO = userDTO;
         startDotAnimation();
-        searchForPlayers();
+        MatchResultDTO matchResultDTO = searchForPlayers();
+        if (matchResultDTO != null) {
+            statusLabel.setText("Match Found");
+            statusLabel.setForeground(Color.GREEN);
+            statusLabel.setFont(new Font("Arial", Font.BOLD, 22));
+            try {
+                Thread.sleep(2000);
+            } catch (Exception e) {
+
+            }
+            SwingUtilities.invokeLater(() -> {
+                mainFrame.remove(this);   // remove searching panel
+                mainFrame.switchTo("GAME", userDTO);
+            });
+
+        }
+
     }
+
 
     public MatchResultDTO searchForPlayers() {
         try {
-            customWebSocketClient.connectToWebSocket();
+            return customWebSocketClient.connectToWebSocket(userDTO);
+
         } catch (Exception e) {
 
         }

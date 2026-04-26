@@ -1,5 +1,6 @@
 package com.game.panels;
 
+import com.game.dto.UserDataDTO;
 import com.game.frames.MainFrame;
 
 import javax.swing.*;
@@ -12,7 +13,7 @@ public class MainMenuPanel extends JPanel {
     private JButton quitButton;
 
     private MainFrame mainFrame;
-    public MainMenuPanel(MainFrame frame) {
+    public MainMenuPanel(MainFrame frame, UserDataDTO userDTO) {
         this.mainFrame = frame;
         setLayout(new GridBagLayout());
         setBackground(Color.BLACK);
@@ -20,11 +21,10 @@ public class MainMenuPanel extends JPanel {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(20, 20, 20, 20);
         gbc.gridx = 0;
-
         // Start Game Button
         startButton = new JButton("Start Game");
         startButton.setPreferredSize(new Dimension(200, 40));
-        startButton.addActionListener(e -> mainFrame.switchTo("SEARCH"));
+        startButton.addActionListener(e -> mainFrame.switchTo("SEARCH", userDTO));
         styleButton(startButton);
         gbc.gridy = 0;
         add(startButton, gbc);

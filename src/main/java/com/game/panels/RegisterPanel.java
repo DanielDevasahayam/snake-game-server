@@ -1,5 +1,6 @@
 package com.game.panels;
 
+import com.game.dto.UserDataDTO;
 import com.game.frames.MainFrame;
 
 import javax.swing.*;
@@ -21,7 +22,7 @@ public class RegisterPanel extends JPanel {
         registerBtn.addActionListener(e ->
                 JOptionPane.showMessageDialog(this, "Account Created! Go login.")
         );
-        backBtn.addActionListener(e -> frame.switchTo("LOGIN"));
+        backBtn.addActionListener(e -> frame.switchTo("LOGIN", UserDataDTO.builder().build()));
 
         add(new JLabel("New Username:"));
         add(username);

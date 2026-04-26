@@ -11,12 +11,11 @@ import java.lang.reflect.Type;
 import java.util.concurrent.CompletableFuture;
 
 @AllArgsConstructor
-public class MyStompSessionHandler extends StompSessionHandlerAdapter {
-
+public class InGameSessionHandler extends StompSessionHandlerAdapter {
 
     private UserDataDTO userDTO;
 
-    private CompletableFuture<MatchResultDTO> future;
+    private CompletableFuture<String> future;
     @Override
     public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
         System.out.println("Connected");
@@ -31,21 +30,7 @@ public class MyStompSessionHandler extends StompSessionHandlerAdapter {
     public void handleFrame(StompHeaders headers, Object payload) {
         MatchResultDTO matchResultDTO = (MatchResultDTO) payload;
 
-        if (matchResultDTO.getOpponent() == null
-                || matchResultDTO.getPlayerId() == null) {
-            return;
-        }
-
-        if (!(matchResultDTO.getOpponent().equals(userDTO.getId().toString())
-            || matchResultDTO.getPlayerId().equals(userDTO.getId().toString()))) {
-            return;
-        }
-
-        if (matchResultDTO.getType().equals("JOIN_ROOM")) {
-            System.out.println("Match found : " + "player1 : " + matchResultDTO.getPlayerId()
-                    + " player2 : " + matchResultDTO.getOpponent());
-
-            future.complete(matchResultDTO);
+        if (matchResultDTO.getType().equals("START_GAME")) {
         }
 
     }

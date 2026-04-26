@@ -1,6 +1,9 @@
 package com.game.panels;
 
+import com.game.dto.MatchResultDTO;
+import com.game.dto.UserDataDTO;
 import com.game.network.CustomWebSocketClient;
+import com.game.network.InGameSessionHandler;
 import com.game.network.MyStompSessionHandler;
 import com.game.objects.Apple;
 import com.game.objects.Snake;
@@ -32,6 +35,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
 
 
 public class TestingGamePanel extends com.game.panels.BasePanel implements ActionListener {
@@ -84,13 +88,14 @@ public class TestingGamePanel extends com.game.panels.BasePanel implements Actio
         stompClient.setMessageConverter(new MappingJackson2MessageConverter());
         StompSession session = null;
         String url = "http://localhost:8080/ws";
-        StompSessionHandler sessionHandler = new MyStompSessionHandler();
+        StompSessionHandler sessionHandler = new MyStompSessionHandler(UserDataDTO.builder().build(), new CompletableFuture<>());
         try {
             session = stompClient.connectAsync(url, sessionHandler).get();
 
-            session.subscribe("/topic/queue", sessionHandler);
-            System.out.println("Sending message");
-            session.send("/app/findPlayersInQueue", "MESSI");
+            session.subscribe("/topic/game" + "/" +
+                    1, new InGameSessionHandler(UserDataDTO.builder().build(), new CompletableFuture<>()));
+            session.send("/app/game/" + 1, MatchResultDTO.builder().roomId("dasd").build());
+
 //            Thread.sleep(300000);
         } finally {
 

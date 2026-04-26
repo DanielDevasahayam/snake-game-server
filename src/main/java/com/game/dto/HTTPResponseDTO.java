@@ -9,4 +9,5 @@ import lombok.Data;
 public class HTTPResponseDTO {
     private String message;
     private int statusCode;
+    private Long id;
 }

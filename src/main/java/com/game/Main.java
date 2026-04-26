@@ -1,5 +1,6 @@
 package com.game;
-import com.game.frames.MainFrame;
+
+import com.game.frames.GameFrame;
 
 // Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
 // then press Enter. You can now see whitespace characters in your code.
@@ -8,7 +9,7 @@ public class Main {
         //do login
         //search for players
         //start
-        new MainFrame();
+        new GameFrame();
 
     }
 }

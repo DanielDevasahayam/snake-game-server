@@ -1,7 +1,7 @@
 package com.game.frames;
 
+import com.game.dto.UserDataDTO;
 import com.game.panels.GamePanel;
-import com.game.panels.LoginPanel;
 import com.game.panels.MainMenuPanel;
 import com.game.panels.SearchingPanel;
 
@@ -20,23 +20,24 @@ public class MainFrame extends JFrame {
         setResizable(false);
         setLocationRelativeTo(null);
 
-        container = new LoginPanel(this);
+//        container = new LoginPanel(this);
 //        container = new TestingGamePanel("C:\\Daniel\\Tech\\SpringProjects\\spring-auth\\SnakeGame\\resources\\files\\Input.txt");
+//        container = new GameFrame(this);
         add(container);
         setVisible(true);
     }
 
-    public void switchTo(String name) {
+    public void switchTo(String name, UserDataDTO userDTO) {
         switch (name) {
             case "GAME" -> createGamePanel();
             case "LOGIN" -> createLoginPanel();
-            case "SEARCH" -> createSearchingPanel();
-            case "MENU" -> createMainMenuPanel();
+            case "SEARCH" -> createSearchingPanel(userDTO);
+            case "MENU" -> createMainMenuPanel(userDTO);
         }
     }
 
-    private void createMainMenuPanel() {
-        this.add(new MainMenuPanel(this));
+    private void createMainMenuPanel(UserDataDTO userDTO) {
+        this.add(new MainMenuPanel(this, userDTO));
         this.remove(container);
         this.setTitle("Searching ... ");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -49,8 +50,8 @@ public class MainFrame extends JFrame {
     private void createLoginPanel() {
 
     }
-    private void createSearchingPanel() {
-        this.add(new SearchingPanel());
+    private void createSearchingPanel(UserDataDTO userDTO) {
+        this.add(new SearchingPanel(this, userDTO));
         this.remove(container);
         this.setTitle("Searching ... ");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
